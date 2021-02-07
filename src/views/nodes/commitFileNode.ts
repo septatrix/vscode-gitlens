@@ -1,6 +1,6 @@
 'use strict';
 import * as paths from 'path';
-import { Command, Selection, TreeItem, TreeItemCollapsibleState } from 'vscode';
+import { Command, Selection, TreeItem, TreeItemCollapsibleState, Uri } from 'vscode';
 import { Commands, DiffWithPreviousCommandArgs } from '../../commands';
 import { Container } from '../../container';
 import { GitBranch, GitFile, GitLogCommit, GitRevisionReference, StatusFileFormatter } from '../../git/git';
@@ -63,6 +63,11 @@ export class CommitFileNode<TView extends View = ViewsWithCommits> extends ViewR
 		const item = new TreeItem(this.label, TreeItemCollapsibleState.None);
 		item.contextValue = this.contextValue;
 		item.description = this.description;
+		item.resourceUri = Uri.parse(
+			`gitlens-view://commit-file/${this.commit.ref}/${this.file.fileName}?${encodeURIComponent(
+				JSON.stringify({ repoPath: this.commit.repoPath, file: this.file }),
+			)}`,
+		);
 		item.tooltip = this.tooltip;
 
 		const icon = GitFile.getStatusIcon(this.file.status);
